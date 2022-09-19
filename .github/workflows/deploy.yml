@@ -1,0 +1,44 @@
+name: Deploy Small Laravel 8 application to Cloud Run
+
+on:
+  push:
+    branches: [ develop ]
+
+env:
+  GAR_HOSTNAME: us-central1-docker.pkg.dev
+  GAR_REPOSITORY: mydemocicd
+  GCP_PROJECT: automatic-array-361707
+
+jobs:
+    deploy:
+        name: Setup Google Cloud Account
+        runs-on: ubuntu-latest
+
+        steps:
+
+        - name: Login
+          uses: google-github-actions/setup-gcloud@v0
+          with:
+            project_id: automatic-array-361707
+            service_account_email: ${{ secrets.GCP_EMAIL }}
+            service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+
+        - name: Configure Docker
+          run: gcloud auth configure-docker "$GAR_HOSTNAME" --quiet
+        - name: Checkout repository
+          uses: actions/checkout@v3
+
+        - name: Build Docker image
+          run: |
+            IMAGE_NAME="$GAR_HOSTNAME/$GCP_PROJECT/$GAR_REPOSITORY/$GAR_REPOSITORY:$GITHUB_SHA"
+            docker build . -t $IMAGE_NAME
+
+        - name: Push Docker image
+          run: |
+            IMAGE_NAME="$GAR_HOSTNAME/$GCP_PROJECT/$GAR_REPOSITORY/$GAR_REPOSITORY:$GITHUB_SHA"
+            docker push $IMAGE_NAME
+
+        - name: Deploy Docker image
+          run: |
+            IMAGE_NAME="$GAR_HOSTNAME/$GCP_PROJECT/$GAR_REPOSITORY/$GAR_REPOSITORY:$GITHUB_SHA"
+            gcloud run deploy $GAR_REPOSITORY --image $IMAGE_NAME --region us-central1 --platform managed --allow-unauthenticated

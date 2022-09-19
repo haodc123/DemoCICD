@@ -1,0 +1,5 @@
+Slide: https://docs.google.com/presentation/d/1z6-Qvu3t67HAYBLOCVpkSuZJskNt9ful79XaM49KIbE/edit#slide=id.g1502dd4b005_0_438
+
+TUT:
++ https://robertodev.medium.com/continuous-integration-with-github-actions-and-laravel-6-e6cb9aa5aea9
++ https://www.twilio.com/blog/build-test-deploy-laravel-application-github-actions
