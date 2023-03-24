@@ -3,7 +3,7 @@ name: Test, build small laravel 8 web app
 on:
   push:
     branches:
-    - develop
+    - develop # demo branch
     
 jobs:
   test:
